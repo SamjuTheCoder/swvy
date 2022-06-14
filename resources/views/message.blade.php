@@ -20,9 +20,9 @@
 		<!-- padding -->
 		<table width="90%" border="0" cellspacing="0" cellpadding="0">
 			<tr><td align="center">
-			    		<a href="https://swvy.com" target="_blank" style="color: #596167; font-family: Arial, Helvetica, sans-serif; float:left; width:100%; padding:20px;text-align:center; font-size: 13px;">
+			    		<a href="https://goswyv.com" target="_blank" style="color: #596167; font-family: Arial, Helvetica, sans-serif; float:left; width:100%; padding:20px;text-align:center; font-size: 13px;">
 									<font face="Arial, Helvetica, sans-seri; font-size: 13px;" size="3" color="#596167">
-									<img src="https://backend.belmazcredit.com/swvy-logo.png"  border="0" width="180" height="180" /></font>
+									<img src="https://goswyv.com/images/swvy-logo.png"  border="0" width="180" height="180" /></font>
 									
 						</a>
 					</td>

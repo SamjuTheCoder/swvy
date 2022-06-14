@@ -269,7 +269,7 @@ class PassportController extends FunctionController
               
               foreach($photo as $key => $photoFile){
                   $name = time() . '' . $key . '.' .$photoFile->getClientOriginalExtension();
-                  $location = 'userPhotos/';
+                  $location = 'images/';
                   $photoFile->move($location, $name);
                 }
         }
