@@ -30,21 +30,21 @@ class PassportController extends FunctionController
         // collect users input
         $input = $request->only([
             'firstname',
-            'middlename',
+            //'middlename',
             'lastname', 
             'phone',
             'email', 
             'password', 
             'is_terms_conditions',
-            'title_designation',
-            'company_name',
-            'gender', 
-            'country',
-            'state',
-            'city',
-            'dob',
-            'notify_dob',
-            'photo_url',
+            // 'title_designation',
+            // 'company_name',
+            // 'gender', 
+            // 'country',
+            // 'state',
+            // 'city',
+            // 'dob',
+            // 'notify_dob',
+            // 'photo_url',
         ]);
         
     
@@ -59,14 +59,14 @@ class PassportController extends FunctionController
 
         $validator = Validator::make($input, $validate_data);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Please see errors parameter for all errors.',
-                'errors' => $validator->errors()
-            ]);
-            return;
-        }
+        // if ($validator->fails()) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => "Error",
+        //         'errors' => $validator->errors()
+        //     ]);
+        //     return;
+        // }
         
         // check if terms and condition is checked
         if($input['is_terms_conditions'] == null) {
@@ -80,7 +80,7 @@ class PassportController extends FunctionController
         //insert record and return user id
         $user = User::create([
             'firstname' => $input['firstname'],
-            'middlename' => $input['middlename'],
+            //'middlename' => $input['middlename'],
             'lastname' => $input['lastname'],
             'phone' => $input['phone'],
             'email' => $input['email'],
@@ -88,36 +88,37 @@ class PassportController extends FunctionController
             'is_terms_conditions' => $input['is_terms_conditions'],
             'connection_code' => $this->generateCode(6).$this->OrderID() + 1,
             'user_type' => 2,
-            'title_designation' => $input['title_designation'],
-            'company_name' => $input['company_name'],
-            'gender' => $input['gender'],
-            'country' => $input['country'],
-            'state' => $input['state'],
-            'city' => $input['city'],
-            'dob' => $input['dob'],
-            'notify_dob' => $input['notify_dob'],
-            'photo_url' => $input['photo_url'],
+            //'title_designation' => $input['title_designation'],
+            // 'company_name' => $input['company_name'],
+            // 'gender' => $input['gender'],
+            // 'country' => $input['country'],
+            // 'state' => $input['state'],
+            // 'city' => $input['city'],
+            // 'dob' => $input['dob'],
+            // 'notify_dob' => $input['notify_dob'],
+            // 'photo_url' => $input['photo_url'],
         ]);
 
         // create first business card
         BusinessCard::create([
             'userid' => $user->id,
             'firstname' => $input['firstname'],
-            'middlename' => $input['middlename'],
+            //'middlename' => $input['middlename'],
             'lastname' => $input['lastname'],
             'phone_number' => $input['phone'],
             'email' => $input['email'],
-            'title_designation' => $input['title_designation'],
+            //'title_designation' => $input['title_designation'],
         ]);
 
                
-        $fullname = $input['firstname'].' '.$input['middlename'].' '. $input['lastname'];
+        $fullname = $input['firstname'].' '. $input['lastname'];
 
         Mail::to($input['email'])->send(new Welcome($input['email'], $fullname)); // send welcome email to user
 
         return response()->json([
             'success' => true,
-            'message' => 'Succesfully registered. Please check your inbox to verify your email'
+            'message' => 'Succesfully registered. Please check your inbox to verify your email',
+            'userid' =>  $user->id
         ], 200);
         return;
     }
@@ -131,6 +132,67 @@ class PassportController extends FunctionController
             $randomString .= $characters[rand(0, $charactersLength - 1)];
         }
         return $randomString;
+    }
+
+    // this funcion creates first business card or skip
+    public function createBusinessCardOrSkip(Request $request) {
+
+        $input = $request->only([
+            'userid',
+            'title_designation',
+            'company_name',
+            'gender', 
+            'country',
+            'state',
+            'city',
+            'year',
+            'month',
+            'day',
+            'dob',
+            'notify_dob',
+            //'photo_url',
+        ]);
+
+         // validate user inputs
+         $validate_data = [
+            'title_designation' => 'required|string|min:3',
+            'company_name' => 'required|string|min:3',
+            'gender' => 'required|string',
+            'password' => 'required|min:6',
+         ];
+        
+        //insert record and return user id
+        $user = User::where('id',$input['userid'])->update([
+
+            'title_designation' => $input['title_designation'],
+            'company_name' => $input['company_name'],
+            'gender' => $input['gender'],
+            'country' => $input['country'],
+            'state' => $input['state'],
+            'city' => $input['city'],
+            'dob' => $input['year'] .'-'.$input['month'].'-'.$input['day'],
+            'notify_dob' => $input['notify_dob'],
+            //'photo_url' => $input['photo_url'],
+        ]);
+
+        // create first business card
+        BusinessCard::where('userid',$input['userid'])->update([
+        
+            'title_designation' => $input['title_designation'],
+            'company_name' => $input['company_name'],
+            // 'gender' => $input['gender'],
+            // 'country' => $input['country'],
+            // 'state' => $input['state'],
+            // 'city' => $input['city'],
+            // 'dob' => $input['year'] .'-'.$input['month'].'-'.$input['day'],
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Successfully created',
+        ], 200);
+        return;
+
     }
 
     // verify email 
@@ -328,7 +390,7 @@ class PassportController extends FunctionController
             return response()->json([
                 'success' => false,
                 'message' => 'User authentication failed.'
-            ], 401);
+            ]);
         }
     }
 

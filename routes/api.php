@@ -23,6 +23,7 @@ use App\Http\Controllers\ProductServiceController;
 
 
 Route::post('register', [PassportController::class, 'register']);
+Route::post('create-card', [PassportController::class, 'createBusinessCardOrSkip']);
 Route::post('login', [PassportController::class, 'login']);
 Route::get('verify-email/{email}', [PassportController::class, 'verifyEmail']);
 
